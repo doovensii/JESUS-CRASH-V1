@@ -106,8 +106,8 @@ async function sendbug(dest, zk, ms, repondre, amount, victims, bug) {
 
 // BUG MENU
 cmd({
-  pattern: "BMBbugs",
-  categorie: "menu",
+  pattern: "JESUSbugs",
+  categorie: "bug",
   react: "🅱️",
   desc: "Show bug menu",
   filename: __filename,
@@ -173,7 +173,7 @@ docugcbug <grouplink>${mono}`;
 // BUG (send document bugpdf many times)
 cmd({
   pattern: "bug",
-  categorie: "menu",
+  categorie: "bug",
   react: "🛡️",
   desc: "Send bug PDF many times",
   filename: __filename,
@@ -209,7 +209,7 @@ cmd({
 // CRASH (send text bug repeatedly)
 cmd({
   pattern: "crash",
-  categorie: "menu",
+  categorie: "bug",
   react: "🛡️",
   desc: "Send text bugs repeatedly",
   filename: __filename,
@@ -228,7 +228,7 @@ cmd({
 // LOCCRASH (send location spam crash)
 cmd({
   pattern: "loccrash",
-  categorie: "menu",
+  categorie: "bug",
   react: "📍",
   desc: "Send crashing location spam",
   filename: __filename,
@@ -258,7 +258,7 @@ cmd({
 // CRASHBUG (send crashbug document to numbers)
 cmd({
   pattern: "crashbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "🛡️",
   desc: "Send crashbug to numbers",
   filename: __filename,
@@ -294,7 +294,7 @@ cmd({
 // AMOUNTBUG (send X local bugs)
 cmd({
   pattern: "amountbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "🛡️",
   desc: "Send X local bugs",
   filename: __filename,
@@ -332,7 +332,7 @@ cmd({
 // PMBUG (send bug via PM)
 cmd({
   pattern: "pmbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "🛡️",
   desc: "Send bug via PM",
   filename: __filename,
@@ -366,7 +366,7 @@ cmd({
 // trollybug (send long spam message to numbers)
 cmd({
   pattern: "trollybug",
-  categorie: "menu",
+  categorie: "bug",
   react: "🧻",
   desc: "Send long scroll spam to numbers",
   filename: __filename,
@@ -409,7 +409,7 @@ cmd({
 // docubug (send document spam to numbers)
 cmd({
   pattern: "docubug",
-  categorie: "menu",
+  categorie: "bug",
   react: "📄",
   desc: "Send document spam to numbers",
   filename: __filename,
@@ -451,7 +451,7 @@ cmd({
 // unlimitedbug (send unlimited spam to numbers)
 cmd({
   pattern: "unlimitedbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "♾️",
   desc: "Send unlimited spam to numbers",
   filename: __filename,
@@ -485,7 +485,7 @@ cmd({
 // bombug (send bomb spam to numbers)
 cmd({
   pattern: "bombug",
-  categorie: "menu",
+  categorie: "bug",
   react: "💣",
   desc: "Send bomb spam to numbers",
   filename: __filename,
@@ -519,7 +519,7 @@ cmd({
 // lagbug (send lag-inducing spam to numbers)
 cmd({
   pattern: "lagbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "🐢",
   desc: "Send lag spam to numbers",
   filename: __filename,
@@ -569,7 +569,7 @@ async function sendToGroup(zk, groupJid, message, times = 10, delayMs = 2000) {
 // gcbug (send bug spam to group)
 cmd({
   pattern: "gcbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "💥",
   desc: "Send bug spam to group",
   filename: __filename,
@@ -586,7 +586,7 @@ cmd({
 // delaygcbug (send delayed spam to group)
 cmd({
   pattern: "delaygcbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "⏱️",
   desc: "Send delayed bug spam to group",
   filename: __filename,
@@ -611,7 +611,7 @@ cmd({
 // trollygcbug (send trolly spam to group)
 cmd({
   pattern: "trollygcbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "🧻",
   desc: "Send trolly spam to group",
   filename: __filename,
@@ -630,7 +630,7 @@ cmd({
 // laggcbug (send lag spam to group)
 cmd({
   pattern: "laggcbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "🐢",
   desc: "Send lag spam to group",
   filename: __filename,
@@ -649,7 +649,7 @@ cmd({
 // bomgcbug (send bomb spam to group)
 cmd({
   pattern: "bomgcbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "💣",
   desc: "Send bomb spam to group",
   filename: __filename,
@@ -674,7 +674,7 @@ cmd({
 // unlimitedgcbug (send unlimited spam to group)
 cmd({
   pattern: "unlimitedgcbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "♾️",
   desc: "Send unlimited spam to group",
   filename: __filename,
@@ -699,7 +699,7 @@ cmd({
 // docugcbug (send doc spam to group)
 cmd({
   pattern: "docugcbug",
-  categorie: "menu",
+  categorie: "bug",
   react: "📄",
   desc: "Send document spam to group",
   filename: __filename,
@@ -730,7 +730,7 @@ cmd({
 // DELAYBUG (send delayed bug spam)
 cmd({
   pattern: "delaybug",
-  categorie: "menu",
+  categorie: "bug",
   react: "🕷️",
   desc: "Send delayed bug spam",
   filename: __filename,

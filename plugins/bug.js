@@ -537,7 +537,7 @@ zokou(
     {
         nomCom: "delaybug",
         categorie: "menu",
-        reaction: "🕷️*,
+        reaction: "🕷️",
     },
 
     async (dest, zk, commandOptions) => {

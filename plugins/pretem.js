@@ -3,7 +3,7 @@ const { Sticker, StickerTypes } = require('wa-sticker-formatter');
 
 cmd({
   pattern: 'pretem',
-  desc: 'Re-send any sticker as yours (with custom packname)',
+  desc: 'Re-send any sticker as yours (with custom packname from WhatsApp name)',
   category: 'spam',
   react: '🎭',
   filename: __filename
@@ -18,8 +18,9 @@ cmd({
     const media = await bot.downloadMediaMessage(quoted);
     if (!media) return reply('❌ Failed to download sticker.');
 
-    // 🏷️ Mete non ou ak packname ou vle a
-    const packname = '𓄂⍣⃝𝐆𝚯𝐃𝄟✮͢≛𝐃𝐀𝐖𝐄𝐍𝐒𝄟✮⃝🧭𓄂';
+    // Pran non itilizatè a sou WhatsApp pou mete kòm packname
+    const userName = mek.pushName || 'Unknown';
+    const packname = `${userName}`;
     const author = `Ma volonté est un feu indomptable,
 mon nom, une légende qui s’écrit à chaque pas.`;
 
@@ -39,3 +40,4 @@ mon nom, une légende qui s’écrit à chaque pas.`;
     reply('❌ An error occurred while sending the sticker.');
   }
 });
+

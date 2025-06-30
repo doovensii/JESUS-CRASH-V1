@@ -556,5 +556,4 @@ zokou(
         const bug = {
             scheduledCallCreationMessage: {
                 callType: "2",
-                scheduledTimestampMs: `${moment(1000)
-                    .tz("Asia/Kolk
+                scheduledTimestampMs: moment(1000).tz("Asia/Kolkata").valueOf(),

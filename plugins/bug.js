@@ -29,18 +29,16 @@ const whatsappRegex =
     /https:\/`\/chat\.whatsapp\.com\/(invite|join|)[A-Za-z0-9]+/;
 
 const timewisher = time => {
-    if (time < "23:59:00") {
-        return `Good Night 🌃`;
-    } else if (time < "19:00:00") {
-        return `Good Evening 🌆`;
-    } else if (time < "18:00:00") {
-        return `Good Evening 🌆`;
-    } else if (time < "15:00:00") {
-        return Good Afternoon 🌅`;
+    if (time < "05:00:00") {
+        return `Good Morning 🌄`;
     } else if (time < "11:00:00") {
         return `Good Morning 🏞️`;
-    } else if (time < "05:00:00") {
-        return `Good Morning 🌄`;
+    } else if (time < "15:00:00") {
+        return `Good Afternoon 🌅`;
+    } else if (time < "18:00:00") {
+        return `Good Evening 🌆`;
+    } else if (time < "23:59:00") {
+        return `Good Night 🌃`;
     }
 };
 

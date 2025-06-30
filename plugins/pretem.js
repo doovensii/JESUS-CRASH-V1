@@ -3,7 +3,7 @@ const { Sticker, StickerTypes } = require('wa-sticker-formatter');
 
 cmd({
   pattern: 'pretem',
-  desc: 'Re-send any sticker as yours (with custom packname from WhatsApp name)',
+  desc: 'Re-send any sticker or video as yours (with custom packname from WhatsApp name)',
   category: 'spam',
   react: '🎭',
   filename: __filename
@@ -11,33 +11,33 @@ cmd({
   try {
     const quoted = mek.quoted;
 
-    if (!quoted || quoted.mtype !== 'stickerMessage') {
-      return reply('❌ Reply to a sticker to pretend it\'s yours.');
+    // Verify if it's a sticker or video
+    if (!quoted || !['stickerMessage', 'videoMessage'].includes(quoted.mtype)) {
+      return reply('❌ Reply to a *sticker* or a *short video* (max 10s) to pretend it\'s yours.');
     }
 
     const media = await bot.downloadMediaMessage(quoted);
-    if (!media) return reply('❌ Failed to download sticker.');
+    if (!media) return reply('❌ Failed to download media.');
 
-    // Pran non itilizatè a sou WhatsApp pou mete kòm packname
+    // Get name of user as packname
     const userName = mek.pushName || 'Unknown';
     const packname = `${userName}`;
-    const author = `Ma volonté est un feu indomptable,
-mon nom, une légende qui s’écrit à chaque pas.`;
+    const author = `Ma volonté est un feu indomptable,\nmon nom, une légende qui s’écrit à chaque pas.`;
 
     const sticker = new Sticker(media, {
       pack: packname,
       author,
-      type: StickerTypes.FULL,
+      type: StickerTypes.FULL, // FULL supports animated if media is video
       quality: 100,
+      fps: 10,
+      loop: 0,
     });
 
     const stickerBuffer = await sticker.toBuffer();
-
     await bot.sendMessage(mek.chat, { sticker: stickerBuffer }, { quoted: mek });
 
   } catch (err) {
     console.error('[PRETEM ERROR]', err);
-    reply('❌ An error occurred while sending the sticker.');
+    reply('❌ An error occurred while processing the sticker or video.');
   }
 });
-

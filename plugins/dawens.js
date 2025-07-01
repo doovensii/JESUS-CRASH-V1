@@ -33,7 +33,19 @@ cmd({
     dawensMode[chatId] = false;
     return await reply('🛑 Dawens mode is now OFF');
   } else {
-    return await reply('⚠️ Usage: .dawens on | .dawens off');
+    return await reply(
+      `⚙️ *Dawens Mode Control*
+
+To activate or deactivate Dawens reply-video mode:
+
+• Type: *.dawens on*  ✅
+• Type: *.dawens off* 🛑
+
+Example:
+.dawens on
+
+_Only works in groups where bot is active._`
+    );
   }
 });
 

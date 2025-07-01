@@ -13,32 +13,8 @@ const videoLinks = [
 ];
 
 const cooldowns = {};
-const dawensMode = {};
 
-// Dawens ON / OFF
-cmd({
-  pattern: 'dawens',
-  filename: __filename,
-  category: 'fun',
-  desc: 'Turn dawens video mode on/off',
-}, async (conn, m, { args, reply }) => {
-  const chatId = m.chat;
-  const option = args[0]?.toLowerCase();
-
-  if (option === 'on') {
-    dawensMode[chatId] = true;
-    return await reply('✅ Dawens mode is now ON');
-  } else if (option === 'off') {
-    dawensMode[chatId] = false;
-    return await reply('🛑 Dawens mode is now OFF');
-  } else {
-    return await reply(
-      `⚙️ *Dawens Mode Control*\n\nTo activate or deactivate Dawens reply-video mode:\n\n• Type: *.dawens on*  ✅\n• Type: *.dawens off* 🛑\n\nExample:\n.dawens on\n\n_Only works in groups where bot is active._`
-    );
-  }
-});
-
-// Listener
+// Listener, toujou aktif
 cmd({
   on: 'message',
   filename: __filename,
@@ -57,14 +33,12 @@ cmd({
 
     const chatId = m.chat;
 
-    if (!dawensMode[chatId]) return;
-
     const found = triggerWords.some(word => body.includes(word));
     if (!found) return;
 
     const now = Date.now();
     const lastSent = cooldowns[chatId] || 0;
-    const cooldownTime = 20 * 60 * 1000;
+    const cooldownTime = 20 * 60 * 1000; // 20 min
 
     if (now - lastSent < cooldownTime) return;
 
@@ -78,7 +52,7 @@ cmd({
     }, { quoted: m });
 
   } catch (err) {
-    console.error('❌ Error sending Dawens video:', err);
+    console.error('❌ Error sending video:', err);
     await conn.sendMessage(m.chat, {
       text: `❌ Error sending video: ${err.message}`,
     }, { quoted: m });

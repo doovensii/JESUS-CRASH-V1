@@ -1,11 +1,12 @@
 const { cmd } = require('../command');
 
-let grrrrActive = {};       // Grrrr mode pou chak chat
-let replyCount = {};        // Konbyen fwa reply fèt
-let reactivationTimeout = {}; // Timeout id pou chak chat
+let grrrrActive = {};             // Eta grrrr mode pa chat
+let replyCount = {};             // Konbyen fwa li reponn
+let reactivationTimeout = {};    // Timeout pou reaktivasyon
 
 const emojis = ['😼', '😫', '😹', '😏', '😍', '🙄', '🤨'];
 
+// ⏩ Aktivasyon
 cmd({
   pattern: 'dame-un-grrr',
   category: 'spam',
@@ -20,6 +21,7 @@ cmd({
   await reply(`un que ${emoji}`);
 });
 
+// ⏹️ Dezaktivasyon
 cmd({
   pattern: 'stop-grrrr',
   category: 'spam',
@@ -38,6 +40,7 @@ cmd({
   await reply('Grrrr mode dezaktive ✅');
 });
 
+// 📩 Repons otomatik
 cmd({
   on: 'message',
   filename: __filename,
@@ -46,7 +49,7 @@ cmd({
   if (!grrrrActive[m.chat]) return;
 
   const text = m.body?.toLowerCase() || '';
-  if (text.startsWith('.')) return;
+  if (text.startsWith('.')) return; // evite commands
 
   if (m.quoted) {
     replyCount[m.chat] = (replyCount[m.chat] || 0) + 1;
@@ -57,7 +60,7 @@ cmd({
       await reply('Nou kanpe la 😼');
       grrrrActive[m.chat] = false;
 
-      // Apre 30 segonn li retounen
+      // Apre 30 segonn, retounen
       reactivationTimeout[m.chat] = setTimeout(async () => {
         grrrrActive[m.chat] = true;
         replyCount[m.chat] = 0;
@@ -66,11 +69,10 @@ cmd({
         await conn.sendMessage(m.chat, { text: `Mwen tounen... un que ${emoji}` });
       }, 30000);
     }
-
     return;
   }
 
-  // Si pa gen reply, voye un que ak emoji
+  // Si se pa repons, jis voye emoji
   const emoji = emojis[Math.floor(Math.random() * emojis.length)];
   await reply(`un que ${emoji}`);
 });

@@ -5,7 +5,7 @@ function delay(ms) {
 }
 
 cmd({
-  pattern: "pairspam1000",
+  pattern: "pairspam <number> <amount>",
   desc: "🔁 Spam 1000 Pair Code ak delay",
   category: "bug",
   filename: __filename

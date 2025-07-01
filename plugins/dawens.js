@@ -12,11 +12,10 @@ const videoLinks = [
   'https://files.catbox.moe/m296z6.mp4'
 ];
 
-// Cooldown + Activation status per chat
 const cooldowns = {};
-const dawensMode = {}; // dawensMode[chatId] = true | false
+const dawensMode = {};
 
-// Dawens ON / OFF switch
+// Dawens ON / OFF
 cmd({
   pattern: 'dawens',
   filename: __filename,
@@ -34,38 +33,28 @@ cmd({
     return await reply('🛑 Dawens mode is now OFF');
   } else {
     return await reply(
-      `⚙️ *Dawens Mode Control*
-
-To activate or deactivate Dawens reply-video mode:
-
-• Type: *.dawens on*  ✅
-• Type: *.dawens off* 🛑
-
-Example:
-.dawens on
-
-_Only works in groups where bot is active._`
+      `⚙️ *Dawens Mode Control*\n\nTo activate or deactivate Dawens reply-video mode:\n\n• Type: *.dawens on*  ✅\n• Type: *.dawens off* 🛑\n\nExample:\n.dawens on\n\n_Only works in groups where bot is active._`
     );
   }
 });
 
-// Main trigger
+// Listener
 cmd({
   on: 'message',
   filename: __filename,
-}, async (conn, m, { text }) => {
+}, async (conn, m) => {
   try {
-    const body = text?.toLowerCase();
+    if (!m || m.isBot) return;
+
+    const body = m.body?.toLowerCase();
     if (!body) return;
 
     const chatId = m.chat;
-
-    // Check if dawens mode is active
     if (!dawensMode[chatId]) return;
 
     const now = Date.now();
     const lastSent = cooldowns[chatId] || 0;
-    const cooldownTime = 20 * 60 * 1000; // 20 minutes
+    const cooldownTime = 20 * 60 * 1000; // 20 mins
 
     const found = triggerWords.some(word => body.includes(word));
     if (!found) return;

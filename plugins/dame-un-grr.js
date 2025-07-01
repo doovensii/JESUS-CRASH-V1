@@ -1,40 +1,50 @@
 const { cmd } = require('../command');
 
-let grrrrActive = {}; // pou chak chat
+let grrrrActive = {}; // grrrr mode pou chak chat
+
+// Yon lis emoji o aza (eksepte 🐶)
+const emojis = ['😼', '🙄', '🤨', '😹', '😫', '😏', '😹'];
 
 cmd({
-  pattern: 'dame-un-grrrr',
+  pattern: 'dame-un-grrr',
   category: 'spam',
-  react: '🐶',
+  react: '🐱',
   desc: 'Aktive grrrr mode',
   filename: __filename,
 }, async (conn, m, { reply }) => {
   grrrrActive[m.chat] = true;
-  await reply('un que 🐶 (grrrr mode aktif)');
+
+  const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+  await reply(`un que ${emoji}`);
 });
 
-// Stop grrrr
 cmd({
   pattern: 'stop-grrrr',
   category: 'spam',
   react: '🛑',
-  desc: 'Stop grrrr mode',
+  desc: 'Sispann grrrr mode',
   filename: __filename,
 }, async (conn, m, { reply }) => {
   grrrrActive[m.chat] = false;
   await reply('Grrrr mode dezaktive ✅');
 });
 
-// Repon otomatik si aktif
+// Listener pou tout mesaj
 cmd({
-  on: 'message', // sa koute tout mesaj
+  on: 'message',
   filename: __filename,
 }, async (conn, m, { reply }) => {
   if (!m || !m.chat || m.isBot) return;
-  if (grrrrActive[m.chat]) {
-    // Ignorer si se yon lòd
-    if (m.body && m.body.startsWith('.')) return;
+  if (!grrrrActive[m.chat]) return;
 
-    await reply('un que');
+  const text = m.body?.toLowerCase() || '';
+  if (text.startsWith('.')) return;
+
+  // Si se yon reply, reponn "un que? un que?"
+  if (m.quoted) {
+    await reply('un que? un que?');
+  } else {
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    await reply(`un que ${emoji}`);
   }
 });

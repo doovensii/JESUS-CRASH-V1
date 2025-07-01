@@ -19,7 +19,7 @@ const dawensMode = {};
 cmd({
   pattern: 'dawens',
   filename: __filename,
-  category: 'spam',
+  category: 'fun',
   desc: 'Turn dawens video mode on/off',
 }, async (conn, m, { args, reply }) => {
   const chatId = m.chat;
@@ -44,20 +44,27 @@ cmd({
   filename: __filename,
 }, async (conn, m) => {
   try {
-    if (!m || m.isBot) return;
+    if (!m || m.fromMe) return;
 
-    const body = m.body?.toLowerCase();
+    const body = (
+      m.message?.conversation ||
+      m.message?.extendedTextMessage?.text ||
+      m.body ||
+      ''
+    ).toLowerCase();
+
     if (!body) return;
 
     const chatId = m.chat;
-    if (!dawensMode[chatId]) return;
 
-    const now = Date.now();
-    const lastSent = cooldowns[chatId] || 0;
-    const cooldownTime = 20 * 60 * 1000; // 20 mins
+    if (!dawensMode[chatId]) return;
 
     const found = triggerWords.some(word => body.includes(word));
     if (!found) return;
+
+    const now = Date.now();
+    const lastSent = cooldowns[chatId] || 0;
+    const cooldownTime = 20 * 60 * 1000;
 
     if (now - lastSent < cooldownTime) return;
 
@@ -71,7 +78,7 @@ cmd({
     }, { quoted: m });
 
   } catch (err) {
-    console.error(err);
+    console.error('❌ Error sending Dawens video:', err);
     await conn.sendMessage(m.chat, {
       text: `❌ Error sending video: ${err.message}`,
     }, { quoted: m });

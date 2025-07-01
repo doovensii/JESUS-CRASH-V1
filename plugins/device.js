@@ -2,32 +2,36 @@ const { cmd } = require('../command');
 
 cmd({
   pattern: 'device',
-  desc: 'Detect the user\'s device type',
+  desc: 'Detect device type of the replied user',
   category: 'spam',
   react: '📲',
   filename: __filename
-}, async (client, message) => {
+}, async (client, message, { reply }) => {
   try {
-    const msgId = message.key.id;
-    let deviceType;
+    const quotedMsg = message.quoted;
 
-    if (msgId?.startsWith('3EB0')) {
-      deviceType = 'Android Device';
-    } else if (msgId?.startsWith('3EB1')) {
-      deviceType = 'iOS Device (iPhone)';
-    } else if (msgId?.includes(':')) {
-      deviceType = 'WhatsApp Web/Desktop';
+    if (!quotedMsg || !quotedMsg.key || !quotedMsg.key.id) {
+      return await reply('⚠️ Please reply to a user\'s message to detect their device.');
     }
 
-    if (!deviceType) return; // Do nothing if device is not detected
+    const msgId = quotedMsg.key.id;
+    let deviceType = 'Unknown Device';
 
-    await client.sendMessage(message.key.remoteJid, {
-      text: `📱 *This user is using:* ${deviceType}`
+    if (msgId.startsWith('3EB0')) {
+      deviceType = '📱 Android Device';
+    } else if (msgId.startsWith('3EB1')) {
+      deviceType = '📱 iOS Device (iPhone)';
+    } else if (msgId.includes(':')) {
+      deviceType = '💻 WhatsApp Web/Desktop';
+    }
+
+    await client.sendMessage(message.chat, {
+      text: `✅ *That user is using:* ${deviceType}`,
+      mentions: [quotedMsg.participant || quotedMsg.key.participant || quotedMsg.key.remoteJid],
     }, { quoted: message });
 
   } catch (err) {
-    await client.sendMessage(message.key.remoteJid, {
-      text: `❌ Error detecting device: ${err.message}`
-    }, { quoted: message });
+    console.error(err);
+    await reply(`❌ Error detecting device: ${err.message}`);
   }
 });

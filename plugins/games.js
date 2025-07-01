@@ -418,7 +418,7 @@ cmd({
   'pattern': 'calculate',
   'alias': ['calc'],
   'desc': "Evaluate a mathematical expression.",
-  'category': "utilities",
+  'category': "utility",
   'filename': __filename
 }, async (_0x1cbb24, _0x5a22db, _0xb97cd9, {
   args: _0x62506a,

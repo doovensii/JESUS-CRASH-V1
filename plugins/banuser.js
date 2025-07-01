@@ -14,7 +14,7 @@ const { cmd } = require('../command');
 const config = require('../config');
 
 cmd({
-  pattern: 'banuser',
+  pattern: 'ban',
   desc: '🚫 Ban a user from using the bot.',
   category: 'spam',
   use: '<@tag | number>',

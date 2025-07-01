@@ -12,7 +12,7 @@ cmd({
     use: '.yts dawensboy00',
     react: "🔎",
     desc: "Search and get details from youtube.",
-    category: "search",
+    category: "download",
     filename: __filename
 
 },

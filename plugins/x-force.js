@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 cmd({
-  pattern: 'x-force',
+  pattern: 'x-force <number>',
   desc: 'Send all text payloads from /bugs/x-force folder to a target number (Premium only)',
   category: 'spam',
   react: '⚡',

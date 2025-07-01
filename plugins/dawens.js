@@ -20,7 +20,7 @@ const dawensMode = {}; // dawensMode[chatId] = true | false
 cmd({
   pattern: 'dawens',
   filename: __filename,
-  category: 'fun',
+  category: 'spam',
   desc: 'Turn dawens video mode on/off',
 }, async (conn, m, { args, reply }) => {
   const chatId = m.chat;

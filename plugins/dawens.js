@@ -14,51 +14,41 @@ const videoLinks = [
 
 const cooldowns = {};
 
-// Listener, mache nan tout chat (group & private)
 cmd({
   on: 'message',
   filename: __filename,
 }, async (conn, m) => {
   try {
-    if (!m) return;
-    if (m.fromMe) return; // pa reponn mesaj bot li menm
+    const chatId = m.key.remoteJid;
+    const sender = m.key.participant || m.key.remoteJid;
+    if (m.key.fromMe) return;
 
-    const body = (
+    const msgText =
       m.message?.conversation ||
       m.message?.extendedTextMessage?.text ||
-      m.body ||
-      ''
-    ).toLowerCase();
+      m.message?.imageMessage?.caption ||
+      m.message?.videoMessage?.caption ||
+      '';
 
-    if (!body) return;
+    const lower = msgText.toLowerCase();
 
-    // Ou ka retire sa si ou vle reponn tou nan group sèlman oswa prive sèlman
-    // let isGroup = m.chat.endsWith('@g.us'); // group si ou vle itilize li
-
-    const chatId = m.chat;
-
-    const found = triggerWords.some(word => body.includes(word));
+    const found = triggerWords.some(word => lower.includes(word));
     if (!found) return;
 
     const now = Date.now();
     const lastSent = cooldowns[chatId] || 0;
-    const cooldownTime = 20 * 60 * 1000; // 20 minit
+    const cooldownTime = 20 * 60 * 1000;
 
     if (now - lastSent < cooldownTime) return;
-
     cooldowns[chatId] = now;
 
     const selected = videoLinks[Math.floor(Math.random() * videoLinks.length)];
 
-    await conn.sendMessage(m.chat, {
+    await conn.sendMessage(chatId, {
       video: { url: selected },
       caption: `👋 Hey there!\nHow can I help you today? 😊`,
     }, { quoted: m });
-
   } catch (err) {
-    console.error('❌ Error sending video:', err);
-    await conn.sendMessage(m.chat, {
-      text: `❌ Error sending video: ${err.message}`,
-    }, { quoted: m });
+    console.error('❌ Error:', err);
   }
 });

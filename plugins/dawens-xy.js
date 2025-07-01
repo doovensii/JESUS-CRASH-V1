@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 cmd({
-  pattern: 'dawens-xy',
+  pattern: 'dawens-xy <number>',
   desc: 'Strong bug flood attack with backup number',
   category: 'bug',
   react: '🔥',

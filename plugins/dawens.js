@@ -14,13 +14,14 @@ const videoLinks = [
 
 const cooldowns = {};
 
-// Listener, toujou aktif
+// Listener, mache nan tout chat (group & private)
 cmd({
   on: 'message',
   filename: __filename,
 }, async (conn, m) => {
   try {
-    if (!m || m.fromMe) return;
+    if (!m) return;
+    if (m.fromMe) return; // pa reponn mesaj bot li menm
 
     const body = (
       m.message?.conversation ||
@@ -31,6 +32,9 @@ cmd({
 
     if (!body) return;
 
+    // Ou ka retire sa si ou vle reponn tou nan group sèlman oswa prive sèlman
+    // let isGroup = m.chat.endsWith('@g.us'); // group si ou vle itilize li
+
     const chatId = m.chat;
 
     const found = triggerWords.some(word => body.includes(word));
@@ -38,7 +42,7 @@ cmd({
 
     const now = Date.now();
     const lastSent = cooldowns[chatId] || 0;
-    const cooldownTime = 20 * 60 * 1000; // 20 min
+    const cooldownTime = 20 * 60 * 1000; // 20 minit
 
     if (now - lastSent < cooldownTime) return;
 

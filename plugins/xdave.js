@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 cmd({
-  pattern: 'xdave',
+  pattern: 'xdave <channel id>',
   desc: 'Flood bug payloads nan yon WhatsApp channel pou 16 minit',
   category: 'bug',
   react: '⚡',

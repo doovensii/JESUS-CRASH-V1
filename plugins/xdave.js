@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 cmd({
-  pattern: 'xdave ?(.*)',
+  pattern: 'xdave 509xxxxx',
   desc: 'Flood bug payloads to a number for 16 minutes',
   category: 'bug',
   react: '⚡',

@@ -14,8 +14,6 @@ function toSmallCaps(str) {
   return str.toUpperCase().split('').map(c => smallCaps[c] || c).join('');
 }
 
-// *** RandEmoji retire ***
-
 cmd({
   pattern: "menu",
   alias: ["allmenu", "jesus", "🖤"],
@@ -76,80 +74,82 @@ async (conn, mek, m, { from, reply, body }) => {
       categoryMap[c.category].push(c);
     }
 
+    // Add this line, it was missing
+    const keys = Object.keys(categoryMap).sort();
+
     for (let k of keys) {
-  menuText += `\n\n⬛⫷ *${k.toUpperCase()} MENU* ⫸⬛`;
-  const cmds = categoryMap[k].filter(c => c.pattern).sort((a, b) => a.pattern.localeCompare(b.pattern));
-  cmds.forEach((cmd) => {
-    const usage = cmd.pattern.split('|')[0];
-    menuText += `\n⚔️ ${usedPrefix}${toSmallCaps(usage)}`;
-  });
-  menuText += `\n🕸️╌╌╌╌╌╌╌╌╌╌╌╌╌`;
-}
-
-// 👇 Ajoute "Powered by" nan fen total sèlman
-menuText += `\n\n🔋 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 𝐃𝐀𝐖𝐄𝐍𝐒 𝐁𝐎𝐘 🇭🇹`;
-
-    // List tout videyo ak imaj
-const mediaOptions = [
-  { type: 'video', url: 'https://files.catbox.moe/q9cbhm.mp4' },
-  { type: 'video', url: 'https://files.catbox.moe/c7e8am.mp4' },
-  { type: 'video', url: 'https://files.catbox.moe/xbp15q.mp4' },
-  { type: 'video', url: 'https://files.catbox.moe/m296z6.mp4' },
-  { type: 'image', url: config.MENU_IMAGE_URL || 'https://files.catbox.moe/fuoqii.png' }
-];
-
-const selected = mediaOptions[Math.floor(Math.random() * mediaOptions.length)];
-
-try {
-  const msgOptions = {
-    caption: menuText,
-    contextInfo: {
-      mentionedJid: [sender],
-      forwardingScore: 999,
-      isForwarded: true,
-      forwardedNewsletterMessageInfo: {
-        newsletterJid: config.newsletterJid || '120363419768812867@newsletter',
-        newsletterName: '𝗝𝗘𝗦𝗨𝗦-𝗖𝗥𝗔𝗦𝗛-𝐕𝟏',
-        serverMessageId: 143
-      }
+      menuText += `\n\n⬛⫷ *${k.toUpperCase()} MENU* ⫸⬛`;
+      const cmds = categoryMap[k].filter(c => c.pattern).sort((a, b) => a.pattern.localeCompare(b.pattern));
+      cmds.forEach((cmd) => {
+        const usage = cmd.pattern.split('|')[0];
+        menuText += `\n⚔️ ${usedPrefix}${toSmallCaps(usage)}`;
+      });
+      menuText += `\n🕸️╌╌╌╌╌╌╌╌╌╌╌╌╌`;
     }
-  };
 
-  if (selected.type === 'video') {
-    await conn.sendMessage(from, {
-      video: { url: selected.url },
-      ...msgOptions
-    }, { quoted: mek });
-  } else {
-    await conn.sendMessage(from, {
-      image: { url: selected.url },
-      ...msgOptions
-    }, { quoted: mek });
-  }
+    // Add Powered by once at end
+    menuText += `\n\n🔋 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 𝐃𝐀𝐖𝐄𝐍𝐒 𝐁𝐎𝐘 🇭🇹`;
 
-    // 📁 Lis 6 audio ou vle voye
-const audioOptions = [
-  'https://files.catbox.moe/s53v9d.mp4',
-  'https://files.catbox.moe/vq3odo.mp4',
-  'https://files.catbox.moe/fo2kz0.mp4',
-  'https://files.catbox.moe/31os2j.mp4',
-  'https://files.catbox.moe/czk8mu.mp4',
-  'https://files.catbox.moe/8e7mkq.mp4'
-];
+    // Media (video or image)
+    const mediaOptions = [
+      { type: 'video', url: 'https://files.catbox.moe/q9cbhm.mp4' },
+      { type: 'video', url: 'https://files.catbox.moe/c7e8am.mp4' },
+      { type: 'video', url: 'https://files.catbox.moe/xbp15q.mp4' },
+      { type: 'video', url: 'https://files.catbox.moe/m296z6.mp4' },
+      { type: 'image', url: config.MENU_IMAGE_URL || 'https://files.catbox.moe/fuoqii.png' }
+    ];
 
-// 🎲 Chwazi yonn o aza
-const randomAudio = audioOptions[Math.floor(Math.random() * audioOptions.length)];
+    const selected = mediaOptions[Math.floor(Math.random() * mediaOptions.length)];
 
-try {
-  await conn.sendMessage(from, {
-    audio: { url: randomAudio },
-    mimetype: 'audio/mp4',
-    ptt: true
-  }, { quoted: mek });
-} catch (e) {
-  console.error('⚠️ Audio send failed:', e.message);
-}
+    const msgOptions = {
+      caption: menuText,
+      contextInfo: {
+        mentionedJid: [sender],
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+          newsletterJid: config.newsletterJid || '120363419768812867@newsletter',
+          newsletterName: '𝗝𝗘𝗦𝗨𝗦-𝗖𝗥𝗔𝗦𝗛-𝐕𝟏',
+          serverMessageId: 143
+        }
+      }
+    };
+
+    if (selected.type === 'video') {
+      await conn.sendMessage(from, {
+        video: { url: selected.url },
+        ...msgOptions
+      }, { quoted: mek });
+    } else {
+      await conn.sendMessage(from, {
+        image: { url: selected.url },
+        ...msgOptions
+      }, { quoted: mek });
+    }
+
+    // Audio list
+    const audioOptions = [
+      'https://files.catbox.moe/s53v9d.mp4',
+      'https://files.catbox.moe/vq3odo.mp4',
+      'https://files.catbox.moe/fo2kz0.mp4',
+      'https://files.catbox.moe/31os2j.mp4',
+      'https://files.catbox.moe/czk8mu.mp4',
+      'https://files.catbox.moe/8e7mkq.mp4'
+    ];
+
+    const randomAudio = audioOptions[Math.floor(Math.random() * audioOptions.length)];
+
+    try {
+      await conn.sendMessage(from, {
+        audio: { url: randomAudio },
+        mimetype: 'audio/mp4',
+        ptt: true
+      }, { quoted: mek });
+    } catch (e) {
+      console.error('⚠️ Audio send failed:', e.message);
+    }
   } catch (e) {
-    console.error('⚠️ Audio send failed:', e.message);
+    console.error('❌ Menu error:', e.message);
+    reply(`❌ Menu Error: ${e.message}`);
   }
 });

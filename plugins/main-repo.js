@@ -44,7 +44,7 @@ async (conn, mek, m, { from, reply }) => {
 │📅 *Créé:* ${info.created}
 │♻️ *Mis à jour:* ${info.updated}
 │🌐 *Repo:* ${info.url}
-│🔗 *Session:* https://jesus-crash-v1-session-id2.onrender.com
+│🔗 *Session:* https://sessions-jesus.onrender.com
 ╰────────────────────────────╯
 
 *➤ JESUS-CRASH-V1 est un bot WhatsApp rapide, puissant et blindé par Dawens Tech. Fork-le et laisse une 🌟 !*

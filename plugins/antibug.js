@@ -12,7 +12,7 @@ const cleanText = (text) => {
 cmd({
   pattern: "antibug",
   desc: "Toggle Anti-Bug Protection",
-  category: "spam",
+  category: "protection",
   react: "🛡️",
   filename: __filename
 }, async (conn, m, mdata, { reply, arg }) => {
@@ -20,16 +20,16 @@ cmd({
 
   if (commandArg === "on") {
     antiBugOn = true;
-    return reply("✅ *AntiBug Activated!*\nSuspicious Unicode will now be auto-deleted.");
+    return await reply("✅ *AntiBug Activated!*\nSuspicious Unicode will now be auto-deleted.");
   } else if (commandArg === "off") {
     antiBugOn = false;
-    return reply("🚫 *AntiBug Deactivated.*\nUnicode protection is now disabled.");
+    return await reply("🚫 *AntiBug Deactivated.*\nUnicode protection is now disabled.");
   } else {
-    return reply(`🛡️ *AntiBug Status:* ${antiBugOn ? "ON ✅" : "OFF ❌"}\nUse *.antibug on* or *.antibug off*`);
+    return await reply(`🛡️ *AntiBug Status:* ${antiBugOn ? "ON ✅" : "OFF ❌"}\nUse *.antibug on* or *.antibug off*`);
   }
 });
 
-// Antibug middleware pou pwoteje tout mesaj si li aktive
+// Middleware pou bloke bug si aktif
 cmd({
   pattern: ".*",
   dontAddCommandList: true,
@@ -43,5 +43,5 @@ cmd({
     });
   }
 
-  await next(); // Kontinye si pa gen bug
+  return await next(); // Kontinye si pa gen bug
 });

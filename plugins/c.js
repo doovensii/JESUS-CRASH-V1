@@ -2,7 +2,7 @@ const axios = require('axios');
 const { cmd } = require('../command');
 
 cmd({
-  pattern: "connect ?(.*)",
+  pattern: "connect <number>",
   category: "tools",
   desc: "Connect to JESUS CRASH V1",
   filename: __filename,

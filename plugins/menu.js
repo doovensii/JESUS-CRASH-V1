@@ -21,12 +21,37 @@ cmd({
   category: "menu",
   react: "🖤",
   filename: __filename
-},
-async (conn, mek, m, { from, reply, body }) => {
+}, async (conn, mek, m, { from, reply }) => {
   try {
     const sender = m.sender || mek?.key?.participant || mek?.key?.remoteJid;
-    const date = moment().tz("America/Port-au-Prince").format("dddd, DD MMMM YYYY");
 
+    // Loading animation
+    const stages = [
+      '⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜  0%',
+      '🟩⬜⬜⬜⬜⬜⬜⬜⬜⬜  10%',
+      '🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜  25%',
+      '🟩🟩🟩🟩⬜⬜⬜⬜⬜⬜  50%',
+      '🟩🟩🟩🟩🟩🟩⬜⬜⬜⬜  75%',
+      '🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩  100%'
+    ];
+    let loadingMsg = await conn.sendMessage(from, { text: `🖤 Loading...\n${stages[0]}` }, { quoted: mek });
+
+    for (let i = 1; i < stages.length; i++) {
+      await new Promise(r => setTimeout(r, 500));
+      await conn.sendMessage(from, {
+        edit: loadingMsg.key,
+        text: `🖤 Loading...\n${stages[i]}`
+      });
+    }
+
+    await new Promise(r => setTimeout(r, 500));
+    await conn.sendMessage(from, {
+      edit: loadingMsg.key,
+      text: `✅ Loading complete! Preparing menu...`
+    });
+
+    // Prepare menu text
+    const date = moment().tz("America/Port-au-Prince").format("dddd, DD MMMM YYYY");
     const uptime = () => {
       const sec = process.uptime();
       const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = Math.floor(sec % 60);
@@ -39,10 +64,6 @@ async (conn, mek, m, { from, reply, body }) => {
     const totalCommands = commands.length;
 
     let usedPrefix = config.PREFIX || ".";
-    if (m.body) {
-      const match = m.body.match(/^(\W+)/);
-      if (match && match[1]) usedPrefix = match[1];
-    }
 
     let menuText = `
 ╔══════════════════════════╗

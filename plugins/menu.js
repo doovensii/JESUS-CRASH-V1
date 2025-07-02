@@ -149,3 +149,7 @@ try {
 } catch (e) {
   console.error('⚠️ Audio send failed:', e.message);
 }
+  } catch (e) {
+    console.error('⚠️ Audio send failed:', e.message);
+  }
+});

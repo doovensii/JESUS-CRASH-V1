@@ -78,15 +78,15 @@ async (conn, mek, m, { from, reply, body }) => {
     }
 
     const keys = Object.keys(categoryMap).sort();
-    for (let k of keys) {
-      menuText += `\n\n❖──⭓ *${k.toUpperCase()} MENU* ⭓──❖`;
-      const cmds = categoryMap[k].filter(c => c.pattern).sort((a, b) => a.pattern.localeCompare(b.pattern));
-      cmds.forEach((cmd) => {
-        const usage = cmd.pattern.split('|')[0];
-        menuText += `\n${randEmoji()} ➤ ${usedPrefix}${toSmallCaps(usage)}`;
-      });
-      menuText += `\n🇭🇹──⭓⭓⭓⭓⭓⭓⭓⭓⭓⭓⭓⭓⭓`;
-    }
+for (let k of keys) {
+  menuText += `\n\n⬛⫷ *${k.toUpperCase()} MENU* ⫸⬛`;
+  const cmds = categoryMap[k].filter(c => c.pattern).sort((a, b) => a.pattern.localeCompare(b.pattern));
+  cmds.forEach((cmd) => {
+    const usage = cmd.pattern.split('|')[0];
+    menuText += `\n⚔️ ${usedPrefix}${toSmallCaps(usage)}`;
+  });
+  menuText += `\n🕸️╌╌╌╌╌╌╌╌╌╌╌╌╌`;
+}
 
     try {
       await conn.sendMessage(from, {

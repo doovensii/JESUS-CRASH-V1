@@ -1,31 +1,47 @@
 const { cmd } = require('../command');
 
-// Fonksyon pou netwaye tèks pou anpeche bug (zero-width, RTL, elatriye)
+let antiBugOn = false; // Eta inisyal
+
+// Fonksyon netwayaj Unicode malveyan
 const cleanText = (text) => {
   return text
     .replace(/[\u200B-\u200F\u061C\u180E\u2060-\u206F]/g, '') // Zero-width & bidi
-    .replace(/[^\x20-\x7E\n\r]/g, ''); // Retire tout sa ki pa ascii
+    .replace(/[^\x20-\x7E\n\r]/g, ''); // Netwaye karaktè move
 };
 
 cmd({
   pattern: "antibug",
-  desc: "Activate anti-bug protection",
+  desc: "Toggle Anti-Bug Protection",
   category: "spam",
   react: "🛡️",
   filename: __filename
-}, async (conn, m, mdata, { reply }) => {
-  try {
-    const rawText = "✅ *AntiBugs Activated!*\nSuspicious Unicode will now be auto-deleted.";
-    const safeText = cleanText(rawText);
+}, async (conn, m, mdata, { reply, arg }) => {
+  const commandArg = (arg[0] || '').toLowerCase();
 
-    // Sekirite: si yo eseye mete Unicode nan kòmand lan
-    if (/[\u200B-\u200F\u061C\u180E\u2060-\u206F]/.test(m.body)) {
-      return await reply("⚠️ Unicode bug detected and blocked.");
-    }
-
-    await reply(safeText);
-  } catch (e) {
-    console.error("❌ AntiBug Error:", e);
-    await reply("❌ Error activating AntiBug.");
+  if (commandArg === "on") {
+    antiBugOn = true;
+    return reply("✅ *AntiBug Activated!*\nSuspicious Unicode will now be auto-deleted.");
+  } else if (commandArg === "off") {
+    antiBugOn = false;
+    return reply("🚫 *AntiBug Deactivated.*\nUnicode protection is now disabled.");
+  } else {
+    return reply(`🛡️ *AntiBug Status:* ${antiBugOn ? "ON ✅" : "OFF ❌"}\nUse *.antibug on* or *.antibug off*`);
   }
+});
+
+// Antibug middleware pou pwoteje tout mesaj si li aktive
+cmd({
+  pattern: ".*",
+  dontAddCommandList: true,
+  fromMe: false,
+  filename: __filename
+}, async (conn, m, mdata, { next }) => {
+  if (antiBugOn && /[\u200B-\u200F\u061C\u180E\u2060-\u206F]/.test(m.body)) {
+    return await conn.sendMessage(m.chat, {
+      text: "⚠️ Unicode Bug Detected and Blocked!",
+      quoted: m
+    });
+  }
+
+  await next(); // Kontinye si pa gen bug
 });

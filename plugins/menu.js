@@ -3,7 +3,7 @@ const os = require('os');
 const moment = require('moment-timezone');
 const { cmd, commands } = require('../command');
 
-// Small caps
+// Small caps function
 function toSmallCaps(str) {
   const smallCaps = {
     A: 'ᴀ', B: 'ʙ', C: 'ᴄ', D: 'ᴅ', E: 'ᴇ', F: 'ғ', G: 'ɢ', H: 'ʜ',
@@ -21,9 +21,14 @@ cmd({
   category: "menu",
   react: "🖤",
   filename: __filename
-}, async (conn, mek, m, { from, reply }) => {
+}, async (conn, mek, m, { from, reply, isGroup }) => {
   try {
     const sender = m.sender || mek?.key?.participant || mek?.key?.remoteJid;
+
+    // ✅ MODE CHECK (private / public)
+    if (config.MODE === "private" && isGroup && !config.OWNER_NUMBER.includes(sender.split('@')[0])) {
+      return await reply("🚫 *Private Mode Active!*\nOnly the owner can use the bot in groups.");
+    }
 
     // Loading animation
     const stages = [
@@ -50,7 +55,6 @@ cmd({
       text: `✅ Loading complete! Preparing menu...`
     });
 
-    // Prepare menu text
     const date = moment().tz("America/Port-au-Prince").format("dddd, DD MMMM YYYY");
     const uptime = () => {
       const sec = process.uptime();
@@ -62,7 +66,6 @@ cmd({
     const totalRam = (os.totalmem() / 1024 / 1024).toFixed(1);
     const hostName = os.hostname();
     const totalCommands = commands.length;
-
     let usedPrefix = config.PREFIX || ".";
 
     let menuText = `
@@ -87,7 +90,6 @@ cmd({
 ────────────────────────────
 `;
 
-    // Organize by category
     const categoryMap = {};
     for (let c of commands) {
       if (!c.category) continue;
@@ -95,7 +97,6 @@ cmd({
       categoryMap[c.category].push(c);
     }
 
-    // Add this line, it was missing
     const keys = Object.keys(categoryMap).sort();
 
     for (let k of keys) {
@@ -108,10 +109,8 @@ cmd({
       menuText += `\n🕸️╌╌╌╌╌╌╌╌╌╌╌╌╌`;
     }
 
-    // Add Powered by once at end
     menuText += `\n\n🔋 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 𝐃𝐀𝐖𝐄𝐍𝐒 𝐁𝐎𝐘 🇭🇹`;
 
-    // Media (video or image)
     const mediaOptions = [
       { type: 'video', url: 'https://files.catbox.moe/q9cbhm.mp4' },
       { type: 'video', url: 'https://files.catbox.moe/c7e8am.mp4' },
@@ -148,7 +147,6 @@ cmd({
       }, { quoted: mek });
     }
 
-    // Audio list
     const audioOptions = [
       'https://files.catbox.moe/s53v9d.mp4',
       'https://files.catbox.moe/vq3odo.mp4',
@@ -169,6 +167,7 @@ cmd({
     } catch (e) {
       console.error('⚠️ Audio send failed:', e.message);
     }
+
   } catch (e) {
     console.error('❌ Menu error:', e.message);
     reply(`❌ Menu Error: ${e.message}`);

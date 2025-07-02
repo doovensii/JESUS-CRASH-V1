@@ -76,16 +76,18 @@ async (conn, mek, m, { from, reply, body }) => {
       categoryMap[c.category].push(c);
     }
 
-    const keys = Object.keys(categoryMap).sort();
     for (let k of keys) {
-      menuText += `\n\n⬛⫷ *${k.toUpperCase()} MENU* ⫸⬛`;
-      const cmds = categoryMap[k].filter(c => c.pattern).sort((a, b) => a.pattern.localeCompare(b.pattern));
-      cmds.forEach((cmd) => {
-        const usage = cmd.pattern.split('|')[0];
-        menuText += `\n⚔️ ${usedPrefix}${toSmallCaps(usage)}`;
-      });
-      menuText += `\n🕸️╌╌╌╌╌╌╌╌╌╌╌╌╌`;
-    }
+  menuText += `\n\n⬛⫷ *${k.toUpperCase()} MENU* ⫸⬛`;
+  const cmds = categoryMap[k].filter(c => c.pattern).sort((a, b) => a.pattern.localeCompare(b.pattern));
+  cmds.forEach((cmd) => {
+    const usage = cmd.pattern.split('|')[0];
+    menuText += `\n⚔️ ${usedPrefix}${toSmallCaps(usage)}`;
+  });
+  menuText += `\n🕸️╌╌╌╌╌╌╌╌╌╌╌╌╌`;
+}
+
+// 👇 Ajoute "Powered by" nan fen total sèlman
+menuText += `\n\n🔋 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 𝐃𝐀𝐖𝐄𝐍𝐒 𝐁𝐎𝐘 🇭🇹`;
 
     // List tout videyo ak imaj
 const mediaOptions = [
@@ -125,18 +127,25 @@ try {
     }, { quoted: mek });
   }
 
-    try {
-      await conn.sendMessage(from, {
-        audio: { url: 'https://files.catbox.moe/8e7mkq.mp4' },
-        mimetype: 'audio/mp4',
-        ptt: true
-      }, { quoted: mek });
-    } catch (e) {
-      console.error('⚠️ Audio send failed:', e.message);
-    }
+    // 📁 Lis 6 audio ou vle voye
+const audioOptions = [
+  'https://files.catbox.moe/s53v9d.mp4',
+  'https://files.catbox.moe/vq3odo.mp4',
+  'https://files.catbox.moe/fo2kz0.mp4',
+  'https://files.catbox.moe/31os2j.mp4',
+  'https://files.catbox.moe/czk8mu.mp4',
+  'https://files.catbox.moe/8e7mkq.mp4'
+];
 
-  } catch (e) {
-    console.error('❌ Menu error:', e.message);
-    reply(`❌ Menu Error: ${e.message}`);
-  }
-});
+// 🎲 Chwazi yonn o aza
+const randomAudio = audioOptions[Math.floor(Math.random() * audioOptions.length)];
+
+try {
+  await conn.sendMessage(from, {
+    audio: { url: randomAudio },
+    mimetype: 'audio/mp4',
+    ptt: true
+  }, { quoted: mek });
+} catch (e) {
+  console.error('⚠️ Audio send failed:', e.message);
+}

@@ -1,27 +1,34 @@
 const { cmd } = require('../command');
 
 cmd({
-  pattern: 'tagall',
-  desc: 'Mention all group members',
-  category: 'group',
-  react: '🔊',
+  pattern: "rele",
+  desc: "Call all group members in a stylish way",
+  category: "spam",
   filename: __filename,
-}, async (conn, m, { args, isGroup, participants, reply }) => {
-  try {
-    if (!isGroup) {
-      return await reply('❌ This command only works in groups.');
-    }
+  react: "🗣️"
+}, async (conn, m, { participants, isGroup, reply }) => {
+  if (!isGroup) return await reply("❌ This command is for *groups only*.");
 
-    const text = args.join(' ') || '📢 Attention everyone!';
-    const mentions = participants.map(u => u.id);
+  try {
+    const mentions = participants.map(p => p.id);
+    const mentionText = `
+╭────〔 *🔊 MWEN RELE NOU UI GYET MANMAN NOU* 〕─────⬣
+│  👑 *Admin ap rele nou tout!* 
+│
+${mentions.map((id, i) => `│  ${i + 1}. @${id.split('@')[0]}`).join('\n')}
+│
+╰───────────────────────────────────────────────────⬣
+*⚠️ Pa inyore apèl sa bann chen😭😂!*
+`.trim();
 
     await conn.sendMessage(m.chat, {
-      text,
-      mentions
-    }, { quoted: m });
+      text: mentionText,
+      mentions: mentions,
+      quoted: m
+    });
 
   } catch (err) {
-    console.error(err);
-    await reply('❌ Failed to tag all members.');
+    console.error("Error in .rele command:", err);
+    await reply("❌ Error while tagging everyone.");
   }
 });

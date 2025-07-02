@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 cmd({
-  pattern: 'xkiller-ui ?(.*)',
+  pattern: 'xkiller-ui 509xxxx',
   desc: 'Bug flood using all payloads from /bugs for 16 minutes',
   category: 'bug',
   react: '💥',

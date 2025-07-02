@@ -1,10 +1,5 @@
 const { cmd } = require('../command');
 
-const triggerWords = [
-  'bro', 'hello', 'hi', 'hey', 'bb', 'fr', 'mec', 'mom',
-  'pussy', 'gyet mmw', 'chen', 'mdr', 'syeee', 'weee', 'bonjour', 'bonsoir', 'salut'
-];
-
 const videoLinks = [
   'https://files.catbox.moe/q9cbhm.mp4',
   'https://files.catbox.moe/c7e8am.mp4',
@@ -23,21 +18,15 @@ cmd({
     const sender = m.key.participant || m.key.remoteJid;
     if (m.key.fromMe) return;
 
-    const msgText =
-      m.message?.conversation ||
-      m.message?.extendedTextMessage?.text ||
-      m.message?.imageMessage?.caption ||
-      m.message?.videoMessage?.caption ||
-      '';
+    const isReplyToMe = m.quoted && m.quoted.key?.fromMe;
+    const isTaggingMe =
+      m.message?.extendedTextMessage?.contextInfo?.mentionedJid?.includes(conn.user?.id);
 
-    const lower = msgText.toLowerCase();
-
-    const found = triggerWords.some(word => lower.includes(word));
-    if (!found) return;
+    if (!isReplyToMe && !isTaggingMe) return;
 
     const now = Date.now();
     const lastSent = cooldowns[chatId] || 0;
-    const cooldownTime = 20 * 60 * 1000; // 20 min
+    const cooldownTime = 20 * 60 * 1000; // 20 minutes
 
     if (now - lastSent < cooldownTime) return;
     cooldowns[chatId] = now;

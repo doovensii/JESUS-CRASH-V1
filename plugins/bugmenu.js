@@ -21,19 +21,20 @@ cmd({
 🕸️╌╌╌╌╌╌╌╌╌╌╌╌╌
     `.trim();
 
-    // Lis videyo yo
+    // Videyo yo ak menm caption
     const videos = [
-      { url: 'https://files.catbox.moe/m296z6.mp4', caption: bugMenuText },
-      { url: 'https://files.catbox.moe/c7e8am.mp4', caption: '🕸️ Bug Menu - Video 2' },
-      { url: 'https://files.catbox.moe/q9cbhm.mp4', caption: '🕸️ Bug Menu - Video 3' }
+      { url: 'https://files.catbox.moe/m296z6.mp4' },
+      { url: 'https://files.catbox.moe/c7e8am.mp4' },
+      { url: 'https://files.catbox.moe/q9cbhm.mp4' }
     ];
 
     // Chwazi o aza youn nan videyo yo
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
 
+    // Voye li ak menm caption
     await conn.sendMessage(m.chat, {
       video: { url: randomVideo.url },
-      caption: randomVideo.caption,
+      caption: bugMenuText,
       contextInfo: {
         mentionedJid: [m.sender],
         forwardingScore: 999,

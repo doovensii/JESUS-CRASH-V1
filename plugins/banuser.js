@@ -1,5 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const { cmd } = require('../command');
+const config = require('../config');
+
 const banFile = path.join(__dirname, '../lib/banlist.json');
 const chancesFile = path.join(__dirname, '../lib/chances.json');
 
@@ -9,31 +12,21 @@ if (!fs.existsSync(chancesFile)) fs.writeFileSync(chancesFile, JSON.stringify({}
 let bannedUsers = JSON.parse(fs.readFileSync(banFile));
 let userChances = JSON.parse(fs.readFileSync(chancesFile));
 
-const saveBanlist = () => {
-  fs.writeFileSync(banFile, JSON.stringify(bannedUsers, null, 2));
-};
+const saveBanlist = () => fs.writeFileSync(banFile, JSON.stringify(bannedUsers, null, 2));
+const saveChances = () => fs.writeFileSync(chancesFile, JSON.stringify(userChances, null, 2));
 
-const saveChances = () => {
-  fs.writeFileSync(chancesFile, JSON.stringify(userChances, null, 2));
-};
-
-const { cmd } = require('../command');
-const config = require('../config');
-
-// Function to format chances message in ASCII box
+// Format ASCII chance box
 function formatChancesLeft(chances) {
-  const line = '║                  ║';
-  const chancesLine = `║   You have ${chances} chance${chances === 1 ? '' : 's'} left   ║`;
   return (
     '╔══════════════════╗\n' +
-    line + '\n' +
-    chancesLine + '\n' +
-    line + '\n' +
+    '║                  ║\n' +
+    `║   You have ${chances} chance${chances === 1 ? '' : 's'} left   ║\n` +
+    '║                  ║\n' +
     '╚══════════════════╝'
   );
 }
 
-// Ban command (you can keep yours as is)
+// ✅ Command: Ban user
 cmd({
   pattern: 'ban',
   desc: '🚫 Ban a user from using the bot.',
@@ -61,24 +54,23 @@ cmd({
   return reply(`✅ User *@${target.split('@')[0]}* has been *banned*.`, { mentions: [target] });
 });
 
-// Chance control for any command usage
+// ✅ Global middleware: Check chances & auto-ban
 cmd({
-  on: 'message',
-  filename: __filename,
-}, async (conn, m, { command, reply }) => {
+  pattern: '.*',
+  dontAddCommandList: true,
+  fromMe: false,
+  filename: __filename
+}, async (conn, m, { reply }) => {
   try {
     const sender = m.sender;
 
-    // If banned, refuse access
     if (bannedUsers.includes(sender)) {
-      return reply('🚫 Sorry, you are banned from using this bot.');
+      return await reply('🚫 Sorry, you are banned from using this bot.');
     }
 
-    // If it's a command (starts with prefix)
-    if (command) {
-      if (!userChances[sender]) {
-        userChances[sender] = 3; // default 3 chances
-      }
+    // Only count commands
+    if (m.text?.startsWith(config.HANDLER)) {
+      if (!userChances[sender]) userChances[sender] = 3;
 
       userChances[sender]--;
 
@@ -87,14 +79,11 @@ cmd({
           bannedUsers.push(sender);
           saveBanlist();
           saveChances();
-          return reply(
-            `❌ *You have used all your chances and are now banned from using the bot.*\n` +
-            `Contact the owner if you want to be unbanned.`
-          );
+          return await reply(`❌ *You have used all your chances and are now banned from using the bot.*\nContact the owner to request unban.`);
         }
       } else {
         saveChances();
-        return reply(formatChancesLeft(userChances[sender]));
+        return await reply(formatChancesLeft(userChances[sender]));
       }
     }
   } catch (e) {

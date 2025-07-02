@@ -9,29 +9,44 @@ cmd({
 }, async (conn, m, { reply }) => {
   try {
     const bugMenuText = `
-⬛⫷ *BUG MENU* ⫸⬛
-⚔️ .ᴅᴀᴡᴇɴs-xʏ <ɴᴜᴍʙᴇʀ>
-⚔️ .ᴊᴇsᴜs-ʙᴜɢ
-⚔️ .ᴊᴇsᴜs-ᴄʀᴀsʜ
-⚔️ .ᴊᴇsᴜs-ɪᴏs
-⚔️ .ᴊᴇsᴜs-x-ᴅᴀᴡᴇɴs
-⚔️ .ᴘᴀɪʀsᴘᴀᴍ <ɴᴜᴍʙᴇʀ> <ᴀᴍᴏᴜɴᴛ>
-⚔️ .xᴅᴀᴠᴇ <ᴄʜᴀɴɴᴇʟ ɪᴅ>
-⚔️ .xᴋɪʟʟᴇʀ-ᴜɪ <ɴᴜᴍʙᴇʀ>
-🕸️╌╌╌╌╌╌╌╌╌╌╌╌╌
+╭───〔 *BUG MENU* 〕───⬣
+│
+├ 📂 .dawens-xy <number>
+│   └ 🧨 Fast text spam
+│
+├ 📂 .jesus-ios <number>
+│   └ 👻 iOS WhatsApp crash
+│
+├ 📂 .jesus-crash <number>
+│   └ 🧧 Media crash effect
+│
+├ 📂 .jesus-bug <number>
+│   └ 📱 Android crash with view-once
+│
+├ 📂 .xkiller-ui <number>
+│   └ 🧠 UI bug (Android/WhatsApp)
+│
+├ 📂 .pairspam <number>
+│   └ 📎 Malicious document spam
+│
+├ 📂 .jesus-x-dawens <number>
+│   └ 📄 PDF crash bug
+│
+├ 📂 .xdave <number>
+│   └ 🇻🇳 Vietnamese iOS bug
+│
+╰────────────⬣
+*⚠️ Use with caution. Do not abuse.*
     `.trim();
 
-    // Videyo yo ak menm caption
     const videos = [
       { url: 'https://files.catbox.moe/m296z6.mp4' },
       { url: 'https://files.catbox.moe/c7e8am.mp4' },
       { url: 'https://files.catbox.moe/q9cbhm.mp4' }
     ];
 
-    // Chwazi o aza youn nan videyo yo
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
 
-    // Voye li ak menm caption
     await conn.sendMessage(m.chat, {
       video: { url: randomVideo.url },
       caption: bugMenuText,

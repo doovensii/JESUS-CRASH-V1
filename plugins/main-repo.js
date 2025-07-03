@@ -2,6 +2,7 @@
 const fetch = require('node-fetch');
 const config = require('../config');
 const { cmd } = require('../command');
+const { addExp } = require("../levelsystem");
 
 cmd({
     pattern: "repo",

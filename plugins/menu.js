@@ -25,12 +25,10 @@ cmd({
   try {
     const sender = m.sender || mek?.key?.participant || mek?.key?.remoteJid;
 
-    // ✅ MODE CHECK (private / public)
     if (config.MODE === "private" && isGroup && !config.OWNER_NUMBER.includes(sender.split('@')[0])) {
       return await reply("🚫 *Private Mode Active!*\nOnly the owner can use the bot in groups.");
     }
 
-    // Loading animation
     const stages = [
       '⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜  0%',
       '🟩⬜⬜⬜⬜⬜⬜⬜⬜⬜  10%',
@@ -158,7 +156,7 @@ cmd({
 
     const randomAudio = audioOptions[Math.floor(Math.random() * audioOptions.length)];
 
-    try {
+        try {
       await conn.sendMessage(from, {
         audio: { url: randomAudio },
         mimetype: 'audio/mp4',
@@ -168,4 +166,8 @@ cmd({
       console.error('⚠️ Audio send failed:', e.message);
     }
 
-  } catch (
+  } catch (e) {
+    console.error('❌ Menu error:', e.message);
+    await reply(`❌ Menu Error: ${e.message}`);
+  }
+});

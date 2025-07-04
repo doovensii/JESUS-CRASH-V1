@@ -2,7 +2,7 @@ const config = require('../config');
 const os = require('os');
 const moment = require('moment-timezone');
 const { cmd, commands } = require('../command');
-const { addExp } = require("../levelsystem");
+const levelSystem = require('../lib/levelsystem');
 
 // Small caps function
 function toSmallCaps(str) {

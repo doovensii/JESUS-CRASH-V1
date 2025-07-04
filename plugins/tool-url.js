@@ -31,14 +31,11 @@ cmd({
     form.append("reqtype", "fileupload");
     form.append("fileToUpload", fs.createReadStream(tempFile));
 
-    const res = await axios.post("https://catbox.moe/user/api.php", form, {
-      headers: form.getHeaders(),
-      timeout: 10000
-    });
+    const res = await postToCatbox(form); // Retry + timeout handled inside
 
-    if (!res?.data || !res.data.startsWith("https://")) throw "❌ *Failed to upload to Catbox.*";
+    if (!res?.data || !res.data.startsWith("https://")) throw new Error("❌ *Catbox response is invalid.*");
 
-    fs.unlinkSync(tempFile); // clean up
+    fs.unlinkSync(tempFile); // Clean up
 
     const mediaType = mime.split("/")[0]; // image / video / audio
     const typeLabel = mediaType[0].toUpperCase() + mediaType.slice(1);
@@ -52,9 +49,31 @@ cmd({
 
   } catch (err) {
     console.error("Upload error:", err);
-    await reply(`❌ *Error:* ${err.message || err}`);
+    if (err.code === "ETIMEDOUT") {
+      await reply("❌ *Catbox server timeout. Please try again later.*");
+    } else if (err.code === "ENOTFOUND") {
+      await reply("❌ *Catbox host not found. Check your internet/server connection.*");
+    } else {
+      await reply(`❌ *Error:* ${err.message || err}`);
+    }
   }
 });
+
+// Function with retry logic
+async function postToCatbox(form) {
+  const options = {
+    headers: form.getHeaders(),
+    timeout: 10000,
+  };
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      return await axios.post("https://catbox.moe/user/api.php", form, options);
+    } catch (e) {
+      if (attempt === 2) throw e;
+    }
+  }
+}
 
 // Utility: Detect extension from MIME
 function mimeToExtension(mime) {

@@ -2,7 +2,6 @@ const config = require('../config');
 const os = require('os');
 const moment = require('moment-timezone');
 const { cmd, commands } = require('../command');
-const levelSystem = require('../lib/levelsystem');
 
 // Small caps function
 function toSmallCaps(str) {
@@ -15,19 +14,6 @@ function toSmallCaps(str) {
   return str.toUpperCase().split('').map(c => smallCaps[c] || c).join('');
 }
 
-// --- Cooldown setup pou EXP ---
-const lastExpTime = {};
-
-function addExpWithCooldown(id, name) {
-  const now = Date.now();
-  if (lastExpTime[id] && (now - lastExpTime[id] < 30000)) {
-    // Pa bay EXP si mwens pase 30 segonn depi dènye fwa
-    return null;
-  }
-  lastExpTime[id] = now;
-  return addExp(id, name);
-}
-
 cmd({
   pattern: "menu",
   alias: ["allmenu", "jesus", "🖤"],
@@ -38,12 +24,6 @@ cmd({
 }, async (conn, mek, m, { from, reply, isGroup }) => {
   try {
     const sender = m.sender || mek?.key?.participant || mek?.key?.remoteJid;
-    const userId = m.sender;
-    const userName = m.pushName || "User";
-
-    // Bay EXP ak cooldown
-    const levelUpMsg = addExpWithCooldown(userId, userName);
-    if (levelUpMsg) await reply(levelUpMsg);
 
     // ✅ MODE CHECK (private / public)
     if (config.MODE === "private" && isGroup && !config.OWNER_NUMBER.includes(sender.split('@')[0])) {
@@ -188,8 +168,4 @@ cmd({
       console.error('⚠️ Audio send failed:', e.message);
     }
 
-  } catch (e) {
-    console.error('❌ Menu error:', e.message);
-    reply(`❌ Menu Error: ${e.message}`);
-  }
-});
+  } catch (
